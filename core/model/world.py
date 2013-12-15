@@ -1,6 +1,6 @@
 from collections import defaultdict
 import itertools as it
-import entity
+import entities
 import events
 from events import EntityEventTypes, WorldEventTypes
 
@@ -55,8 +55,8 @@ class EntityContainer:
         if entity not in tile: tile.append(entity)
         return self
 
-    def extend(self, entities):
-        for entity in entities:
+    def extend(self, entities_):
+        for entity in entities_:
             self.add(entity)
         return self
 
@@ -94,7 +94,7 @@ class World(object):
         else:
             self.generate()
         self.terrain = defaultdict(self.default_terrain)
-        self.player = entity.Entity((0, 0), self, 100, "player")
+        self.player = entities.Entity((0, 0), self, 100, "player")
         self.entity_list = [self.player]
         self.entity_container = EntityContainer(self.entity_list)
 

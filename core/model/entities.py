@@ -1,4 +1,5 @@
 import events
+from ..utils import Vector
 
 
 class Entity(object):
@@ -12,8 +13,8 @@ class Entity(object):
         self.world = world
         self.health = health
         self.goal = None
-        self.velocity_x = 0
-        self.velocity_y = 0
+        self.velocity_x = self.velocity_y = 0
+        self.acceleration_x = self.acceleration_y = 0
         self.type = type
 
     @property
@@ -26,15 +27,25 @@ class Entity(object):
 
     @property
     def velocity(self):
-        return self.velocity_x, self.velocity_y
+        return Vector(self.velocity_x, self.velocity_y)
 
     @velocity.setter
     def velocity(self, value):
         self.velocity_x, self.velocity_y = value
 
-    def move(self, time):
+    @property
+    def acceleration(self):
+        return Vector(self.acceleration_x, self.acceleration_y)
+
+    @acceleration.setter
+    def acceleration(self, value):
+        self.acceleration_x, self.acceleration_y = value
+
+    def move(self, dt):
+        """Updates position based on velocity and dt, and velocity based on acceleration. Informs world of movement."""
         old_position = self.position
-        self.position = self.x + (self.velocity_x*time), self.y + (self.velocity_y*time)
+        self.position += (self.velocity * dt)
+        self.velocity += (self.acceleration * dt)
         movement_event = events.Event(sender=self, type_=events.WorldEventTypes.ENTITY_MOVEMENT, old_position=old_position)
         self.world.send(movement_event)
 
@@ -42,7 +53,7 @@ class Entity(object):
         if event.type == events.EntityEventTypes.MOVEMENT:
             self.velocity = event.x, event.y
 
-    def update(self, time):
-        """Time is float in seconds. All velocity values are pseudo-dimensionless (self.positions per second)
+    def update(self, dt):
+        """dt (delta time) is float of seconds. All velocity values are pseudo-dimensionless (self.positions per second)
         """
-        self.move(time)
+        self.move(dt)

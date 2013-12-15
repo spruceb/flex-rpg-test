@@ -1,4 +1,4 @@
-from ..model import events, world, entity
+from ..model import events, world, entities
 from ..view import display
 from collections import defaultdict as dd
 import pygame
@@ -68,7 +68,7 @@ class Dispatcher(object):
                     self.set_entity_velocity(self.player, y=SPEED)
 
                 if event.key == locals.K_SPACE:
-                    fireball = entity.Entity(self.player.position, self.world, 1, 'fireball')
+                    fireball = entities.Entity(self.player.position, self.world, 1, 'fireball')
                     self.set_entity_velocity(fireball, *(6*bool(v) for v in self.player.velocity))
                     print fireball.velocity
                     self.world.entities.append(fireball)
