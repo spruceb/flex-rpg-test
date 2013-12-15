@@ -13,21 +13,33 @@ class Display(object):
         self.display_surface = pygame.display.set_mode(display_size, *display_modes)
         self.display_surface.fill(WHITE)
 
-    def update(self, terrain, terrain_focus_pos):
+    def float_to_pix(self, position):
+        pass
+
+    def update(self, terrain, focus_pos, focus_sprite, ):
         # Rewrite
 
-        start_pix = tuple(-int((n - int(n)) * self.TILE_SIZE) for n in terrain_focus_pos)
+        self.display_surface.fill(BLACK)
+        start_pix = tuple(-int((n - int(n)) * self.TILE_SIZE) for n in focus_pos)
         ends = tuple(int(n / self.TILE_SIZE) + 1 for n in self.display_surface.get_size())
-        terrain_range_x, terrain_range_y = tuple(range(int(p), e) for p, e in zip(terrain_focus_pos, ends))
+        terrain_range_x, terrain_range_y = tuple(range(int(p)-1, e+int(p)) for p, e in zip(focus_pos, ends))
 
         for i_x, x in enumerate(terrain_range_x):
             for i_y, y in enumerate(terrain_range_y):
                 tile = terrain.get((x, y))
-                curr_pix_pos = tuple(n + i * self.TILE_SIZE for n, i in zip(start_pix, (i_x, i_y)))
-                self.display_surface.blit(tile, curr_pix_pos)
+                curr_pix_pos = tuple(n + (i-1) * self.TILE_SIZE for n, i in zip(start_pix, (i_x, i_y)))
+
+                if tile is not None:
+                    self.display_surface.blit(tile, curr_pix_pos)
+                else:
+                    print tile
+
+        self.display_surface.blit(focus_sprite, map(lambda x,y: x-(y/2), self.display_surface.get_rect().center, focus_sprite.get_rect().center))
 
         pygame.display.update()
 
+    def update(self, terrain, focus_pos, entities):
+        pass
     @property
     def pygame_events(self):
         return pygame.event.get()
