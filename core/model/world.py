@@ -104,6 +104,16 @@ class World(object):
     def generate(self):
         pass
 
+    def add_entity(self, entity):
+        self.entity_list.append(entity)
+        self.entity_container.add(entity)
+        return self
+
+    def remove_entity(self, entity):
+        self.entity_list.append(entity)
+        self.entity_container.delete(entity)
+        return self
+
     def default_terrain(self):
         return TerrainTile("grass")
 

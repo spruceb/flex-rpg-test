@@ -20,7 +20,7 @@ class Dispatcher(object):
         self.last_update = None
 
     def sprite(self, model_item):
-        if hasattr(model_item, "position"):
+        if isinstance(model_item, entities.Entity):
             return self.entity_sprite(model_item)
         else:
             return self.terrain_sprite(model_item)
@@ -51,8 +51,6 @@ class Dispatcher(object):
         if self.last_update is None:
             self.last_update = time.time()
 
-        self.display.update(self.wrapped_terrain(self.world.terrain), self.player.position, self.sprite(self.player))
-
         for event in self.display.pygame_events:
             if event.type == locals.QUIT:
                 pygame.quit()
@@ -77,6 +75,10 @@ class Dispatcher(object):
                     self.set_entity_velocity(self.player, y=0)
                 elif event.key in (locals.K_d, locals.K_a):
                     self.set_entity_velocity(self.player, y=0)
+
+        self.display.update(self.wrapped_terrain(self.world.terrain), self.player.position, self.sprite(self.player))
+
+
 
         for e in self.world.entities:
             e.update(time.time() - self.last_update)

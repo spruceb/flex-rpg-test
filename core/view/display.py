@@ -8,15 +8,17 @@ import sys
 class Display(object):
     TILE_SIZE = 32
 
-    def __init__(self, display_size=(0, 0), display_modes=(0, 32)):
+    def __init__(self, display_size=(0, 0), display_modes=(0, 32), tile_size=TILE_SIZE):
         pygame.init()
+        self.tile_size = tile_size
         self.display_surface = pygame.display.set_mode(display_size, *display_modes)
         self.display_surface.fill(WHITE)
 
-    def float_to_pix(self, position):
-        pass
+    @property
+    def size(self):
+        return self.display_surface.get_rect()
 
-    def update(self, terrain, focus_pos, focus_sprite, ):
+    def update(self, terrain, focus_pos, focus_sprite):
         # Rewrite
 
         self.display_surface.fill(BLACK)
@@ -39,7 +41,10 @@ class Display(object):
         pygame.display.update()
 
     def update(self, terrain, focus_pos, entities):
-        pass
+        self.display_surface.fill(BLACK)
+        for sprite, position in entities:
+            self.display_surface.blit(sprite, position)
+
     @property
     def pygame_events(self):
         return pygame.event.get()
