@@ -1,14 +1,14 @@
 import pygame
 from pygame_colors import *
+import os
+from operator import sub
 from pygame import locals
-from itertools import product
+import itertools
 import sys
 
 
 class Display(object):
-    TILE_SIZE = 32
-
-    def __init__(self, display_size=(0, 0), display_modes=(0, 32), tile_size=TILE_SIZE):
+    def __init__(self, display_size=(0, 0), display_modes=(0, 32), tile_size=32):
         pygame.init()
         self.tile_size = tile_size
         self.display_surface = pygame.display.set_mode(display_size, *display_modes)
@@ -18,32 +18,25 @@ class Display(object):
     def size(self):
         return self.display_surface.get_rect()
 
-    def update(self, terrain, focus_pos, focus_sprite):
-        # Rewrite
 
-        self.display_surface.fill(BLACK)
-        start_pix = tuple(-int((n - int(n)) * self.TILE_SIZE) for n in focus_pos)
-        ends = tuple(int(n / self.TILE_SIZE) + 1 for n in self.display_surface.get_size())
-        terrain_range_x, terrain_range_y = tuple(range(int(p)-1, e+int(p)) for p, e in zip(focus_pos, ends))
+    def draw_terrain(self, terrain, focus_pos):
+        start_pix = tuple(-int((n - int(n)) * self.tile_size) for n in focus_pos)
+        # for x from whatever fits from focus pos
 
-        for i_x, x in enumerate(terrain_range_x):
-            for i_y, y in enumerate(terrain_range_y):
-                tile = terrain.get((x, y))
-                curr_pix_pos = tuple(n + (i-1) * self.TILE_SIZE for n, i in zip(start_pix, (i_x, i_y)))
+    def update(self, terrain, entities, pix_to_pos, terrain_start, terrain_end):
+        self.display_surface.fill(WHITE)
+        print("w00t")
 
-                if tile is not None:
-                    self.display_surface.blit(tile, curr_pix_pos)
-                else:
-                    print tile
+        #for y in xrange(terrain_start[1], terrain_end[1]):
+        #    for x in xrange(terrain_start[0], terrain_end[0]):
+        #        tile = terrain.get((x, y))
+        #        if tile is not None:
+        #            self.display_surface.blit(tile, pix_to_pos((x, y)))
 
-        self.display_surface.blit(focus_sprite, map(lambda x,y: x-(y/2), self.display_surface.get_rect().center, focus_sprite.get_rect().center))
-
-        pygame.display.update()
-
-    def update(self, terrain, focus_pos, entities):
-        self.display_surface.fill(BLACK)
         for sprite, position in entities:
+            print sprite, position, "blitted someting"
             self.display_surface.blit(sprite, position)
+        pygame.display.update()
 
     @property
     def pygame_events(self):

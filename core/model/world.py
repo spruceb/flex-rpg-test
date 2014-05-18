@@ -39,7 +39,8 @@ class EntityContainer:
         of the rectangle. The returned list is flat and has no defined order.
         """
         start_x, start_y = start_coords
-        height, width  = size
+        width, height = size
+        print "box", start_coords, size
         indices = it.product(xrange(start_x, start_x + width), xrange(start_y, start_y + height))
         return it.chain(*it.imap(self.__getitem__, indices))
 
@@ -68,7 +69,7 @@ class EntityContainer:
         Raises: KeyError if an invalid `entity` is provided, and ValueError if the entity doesn't exist in its
         supposed tile.
         """
-        x, y = map(int, entity.position) if tile_coords is None else tile_coords
+        x, y = map(int, entity.position) if tile_coords is None else map(int, tile_coords)
         tile = self[x,y]
         tile.remove(entity)
         if not tile:
